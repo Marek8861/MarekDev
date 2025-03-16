@@ -5,15 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MarekDev - Moje Projekty</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
-    <canvas id="starCanvas"></canvas> <!-- Tło gwiazd -->
 
+    <!-- Nagłówek -->
     <header>
         <h1>MarekDev</h1>
-        <p>Wszystkie moje publiczne projekty w jednym miejscu</p>
+        <p>Wszystkie moje publiczne projekty</p>
     </header>
 
+    <!-- Nawigacja -->
     <nav>
         <ul>
             <li><a href="#projekty">Projekty</a></li>
@@ -22,27 +24,31 @@
         </ul>
     </nav>
 
+    <!-- Główna zawartość -->
     <main>
         <section id="projekty">
             <h2>Moje Projekty</h2>
             <p>Brak projektów do wyświetlenia.</p>
         </section>
-    
+
         <section id="o-mnie">
             <h2>O mnie</h2>
-            <p>...</p>
+            <p>Jestem programistą i tworzę gry, strony oraz mody do Minecrafta.</p>
         </section>
-    
+
         <section id="kontakt">
             <h2>Kontakt</h2>
-            <p>...</p>
+            <p>Możesz mnie znaleźć na Discordzie lub YouTube.</p>
         </section>
     </main>
 
+    <!-- Stopka -->
     <footer>
         <p>&copy; 2025 MarekDev. Wszystkie prawa zastrzeżone.</p>
     </footer>
 
-    <script src="three.js"></script>
+    <!-- Skrypt dla animowanego tła -->
+    <script src="background.js"></script>
+
 </body>
 </html>
