@@ -1,55 +1,57 @@
-const canvas = document.getElementById("starCanvas");
-const ctx = canvas.getContext("2d");
+// Inicjalizacja sceny Three.js
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ alpha: true }); // Przezroczyste tło
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+// Światło
+const light = new THREE.PointLight(0xffffff, 1.5, 100);
+light.position.set(0, 0, 0); // Słońce jako źródło światła
+scene.add(light);
 
-const stars = [];
-const numStars = 150; // Liczba gwiazd
+// Tworzenie planet
+const planets = [];
+const planetData = [
+    { size: 2, distance: 0, color: 0xffcc00 }, // Słońce
+    { size: 0.5, distance: 5, color: 0xaaaaaa }, // Merkury
+    { size: 0.8, distance: 8, color: 0xff5500 }, // Wenus
+    { size: 1, distance: 12, color: 0x0000ff }, // Ziemia
+    { size: 0.7, distance: 16, color: 0xff0000 }, // Mars
+];
 
-// Tworzenie gwiazd
-for (let i = 0; i < numStars; i++) {
-    stars.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        radius: Math.random() * 2 + 1,
-        alpha: Math.random(),
-        speed: Math.random() * 0.5 + 0.2
-    });
-}
+// Dodajemy planety do sceny
+planetData.forEach((data) => {
+    const geometry = new THREE.SphereGeometry(data.size, 32, 32);
+    const material = new THREE.MeshStandardMaterial({ color: data.color });
+    const planet = new THREE.Mesh(geometry, material);
+    
+    planet.position.x = data.distance;
+    scene.add(planet);
+    planets.push({ mesh: planet, distance: data.distance, speed: Math.random() * 0.02 + 0.005 });
+});
 
-// Animacja gwiazd
-function animateStars() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+camera.position.z = 30;
 
-    stars.forEach(star => {
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
-        ctx.fill();
-
-        // Gwiazdy powoli opadają w dół
-        star.y += star.speed;
-
-        // Jeśli gwiazda wyleci poza ekran, pojawia się na górze
-        if (star.y > canvas.height) {
-            star.y = 0;
-            star.x = Math.random() * canvas.width;
+// Animacja planet
+function animate() {
+    requestAnimationFrame(animate);
+    
+    planets.forEach((planet, index) => {
+        if (index !== 0) { // Pomijamy Słońce
+            planet.mesh.position.x = Math.cos(Date.now() * planet.speed * 0.001) * planet.distance;
+            planet.mesh.position.z = Math.sin(Date.now() * planet.speed * 0.001) * planet.distance;
         }
-
-        // Migotanie gwiazd
-        star.alpha += (Math.random() - 0.5) * 0.02;
-        if (star.alpha < 0.3) star.alpha = 0.3;
-        if (star.alpha > 1) star.alpha = 1;
     });
 
-    requestAnimationFrame(animateStars);
+    renderer.render(scene, camera);
 }
 
-animateStars();
+animate();
 
-// Dopasowanie canvas do rozmiaru ekranu
+// Dopasowanie do rozmiaru ekranu
 window.addEventListener("resize", () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
 });
