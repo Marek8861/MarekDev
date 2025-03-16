@@ -5,7 +5,7 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 const stars = [];
-const numStars = 100;
+const numStars = 150; // Liczba gwiazd
 
 // Tworzenie gwiazd
 for (let i = 0; i < numStars; i++) {
@@ -18,7 +18,7 @@ for (let i = 0; i < numStars; i++) {
     });
 }
 
-// Animacja gwiazd (migotanie)
+// Animacja gwiazd
 function animateStars() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -28,7 +28,16 @@ function animateStars() {
         ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
         ctx.fill();
 
-        // Zmienianie jasności gwiazd
+        // Gwiazdy powoli opadają w dół
+        star.y += star.speed;
+
+        // Jeśli gwiazda wyleci poza ekran, pojawia się na górze
+        if (star.y > canvas.height) {
+            star.y = 0;
+            star.x = Math.random() * canvas.width;
+        }
+
+        // Migotanie gwiazd
         star.alpha += (Math.random() - 0.5) * 0.02;
         if (star.alpha < 0.3) star.alpha = 0.3;
         if (star.alpha > 1) star.alpha = 1;
@@ -39,7 +48,7 @@ function animateStars() {
 
 animateStars();
 
-// Dostosowanie canvas do rozmiaru ekranu
+// Dopasowanie canvas do rozmiaru ekranu
 window.addEventListener("resize", () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
