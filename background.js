@@ -4,23 +4,30 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({ alpha: true });
 
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.domElement.style.position = "fixed";  // Ustawienie na stałe w tle
+renderer.domElement.style.position = "fixed";  
 renderer.domElement.style.top = "0";
 renderer.domElement.style.left = "0";
-renderer.domElement.style.zIndex = "-1"; // Warstwa tła
+renderer.domElement.style.zIndex = "-1"; 
 document.body.appendChild(renderer.domElement);
 
-// Kamera - zmienione ustawienie
-camera.position.set(0, 20, 40);  // Wyżej i dalej
-camera.lookAt(0, 0, 0);  // Patrzenie na środek układu
+// Kamera - lekko pochylona
+camera.position.set(0, 20, 40);
+camera.lookAt(0, 0, 0);
 
-// Światło - Słońce jako źródło światła
+// **Dodanie tła z gwiazdami**
+const textureLoader = new THREE.TextureLoader();
+const starTexture = textureLoader.load("https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/galaxy_starfield.png");
+scene.background = starTexture;
+
+// **Światło - więcej światła, by było jaśniej**
 const light = new THREE.PointLight(0xffffff, 2, 200);
-light.position.set(0, 0, 0); 
+light.position.set(0, 0, 0); // Słońce jako źródło światła
 scene.add(light);
 
-// Ładowanie tekstur planet
-const textureLoader = new THREE.TextureLoader();
+const ambientLight = new THREE.AmbientLight(0x333333, 2); // Miękkie światło w tle
+scene.add(ambientLight);
+
+// **Ładowanie tekstur planet**
 const planetTextures = {
     sun: textureLoader.load("https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/sun.jpg"),
     mercury: textureLoader.load("https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/mercury.jpg"),
@@ -29,7 +36,7 @@ const planetTextures = {
     mars: textureLoader.load("https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/mars.jpg"),
 };
 
-// Tworzenie planet z teksturami
+// **Tworzenie planet**
 const planets = [];
 const planetData = [
     { name: "sun", size: 5, distance: 0, texture: planetTextures.sun },
@@ -39,7 +46,7 @@ const planetData = [
     { name: "mars", size: 1.3, distance: 24, texture: planetTextures.mars },
 ];
 
-// Dodawanie planet do sceny
+// **Dodawanie planet do sceny**
 planetData.forEach((data) => {
     const geometry = new THREE.SphereGeometry(data.size, 32, 32);
     const material = new THREE.MeshStandardMaterial({ map: data.texture });
@@ -50,7 +57,7 @@ planetData.forEach((data) => {
     planets.push({ mesh: planet, distance: data.distance, speed: Math.random() * 0.02 + 0.005 });
 });
 
-// Animacja planet - ruch po orbitach
+// **Animacja planet - ruch po orbitach**
 function animate() {
     requestAnimationFrame(animate);
 
@@ -66,7 +73,7 @@ function animate() {
 
 animate();
 
-// Dopasowanie do rozmiaru ekranu
+// **Dopasowanie do rozmiaru ekranu**
 window.addEventListener("resize", () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
     camera.aspect = window.innerWidth / window.innerHeight;
